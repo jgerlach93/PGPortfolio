@@ -1,5 +1,7 @@
-from ..tdagent import TDAgent
 import numpy as np
+
+from ..tdagent import TDAgent
+
 
 class OLMAR2(TDAgent):
     '''Moving average reversion strategy for on-line portfolio selection
@@ -9,7 +11,7 @@ class OLMAR2(TDAgent):
 
     '''
 
-    def __init__(self,  eps=10, alpha=0.5, data_phi=None, b=None):
+    def __init__(self, eps=10, alpha=0.5, data_phi=None, b=None):
         '''init
         :param eps: mean reversion threshold
         :param alpha: trade off parameter for moving average
@@ -20,7 +22,6 @@ class OLMAR2(TDAgent):
         self.data_phi = data_phi
         self.b = b
 
-
     def decide_by_history(self, x, last_b):
         self.record_history(x)
         nx = self.get_last_rpv(x)
@@ -29,14 +30,14 @@ class OLMAR2(TDAgent):
             self.b = np.ones(nx.size) / nx.size
         last_b = self.b
         if self.data_phi is None:
-            self.data_phi = np.ones((1,nx.size))
+            self.data_phi = np.ones((1, nx.size))
         else:
-            self.data_phi = self.alpha + (1-self.alpha)*self.data_phi/nx
+            self.data_phi = self.alpha + (1 - self.alpha) * self.data_phi / nx
 
         ell = max(0, self.eps - self.data_phi.dot(last_b))
 
         x_bar = self.data_phi.mean()
-        denominator = np.linalg.norm(self.data_phi - x_bar)**2
+        denominator = np.linalg.norm(self.data_phi - x_bar) ** 2
 
         if denominator == 0:
             lam = 0

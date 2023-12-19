@@ -1,5 +1,6 @@
-from ..tdagent import TDAgent
 import numpy as np
+
+from ..tdagent import TDAgent
 
 
 class CRP(TDAgent):
@@ -24,4 +25,3 @@ class CRP(TDAgent):
         if self.b is None:
             self.b = np.ones(len(x)) / len(x)
         return self.b
-

@@ -1,4 +1,5 @@
 from __future__ import division, print_function, absolute_import
+
 import numpy as np
 
 
@@ -28,8 +29,8 @@ def sharpe(pc_array):
     @:param pc_array: all the portfolio changes during a trading process
     @:return: sharpe ratio
     """
-    pc_array = pc_array-1.0
-    return np.mean(pc_array)/np.std(pc_array)
+    pc_array = pc_array - 1.0
+    return np.mean(pc_array) / np.std(pc_array)
 
 
 def moving_accumulate(pc_array, n=48):
@@ -39,8 +40,8 @@ def moving_accumulate(pc_array, n=48):
 
 
 def positive_count(pc_array):
-    return np.sum(pc_array>1)
+    return np.sum(pc_array > 1)
 
 
 def negative_count(pc_array):
-    return np.sum(pc_array<1)
+    return np.sum(pc_array < 1)

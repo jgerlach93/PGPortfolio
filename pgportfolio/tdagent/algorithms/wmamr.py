@@ -1,5 +1,6 @@
-from pgportfolio.tdagent.algorithms.pamr import PAMR
 import numpy as np
+
+from pgportfolio.tdagent.algorithms.pamr import PAMR
 
 
 class WMAMR(PAMR):
@@ -23,12 +24,10 @@ class WMAMR(PAMR):
             raise ValueError('window parameter must be >=1')
         self.window = window
 
-
     def decide_by_history(self, x, last_b):
         self.record_history(x)
-        xx = np.mean(self.history[-self.window:,], axis=0)
+        xx = np.mean(self.history[-self.window:, ], axis=0)
         # calculate return prediction
         b = self.update(last_b, xx, self.eps, self.C)
 
         return b
-

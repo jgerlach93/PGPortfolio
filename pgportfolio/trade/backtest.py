@@ -1,9 +1,12 @@
 from __future__ import absolute_import, division, print_function
-import numpy as np
-from pgportfolio.trade import trader
-from pgportfolio.marketdata.datamatrices import DataMatrices
+
 import logging
+
+import numpy as np
+
+from pgportfolio.marketdata.datamatrices import DataMatrices
 from pgportfolio.tools.trade import calculate_pv_after_commission
+from pgportfolio.trade import trader
 
 
 class BackTest(trader.Trader):
@@ -75,8 +78,7 @@ class BackTest(trader.Trader):
         portfolio_change = pv_after_commission * np.dot(omega, future_price)
         self._total_capital *= portfolio_change
         self._last_omega = pv_after_commission * omega * \
-                           future_price /\
+                           future_price / \
                            portfolio_change
         logging.debug("the portfolio change this period is : {}".format(portfolio_change))
         self.__test_pc_vector.append(portfolio_change)
-

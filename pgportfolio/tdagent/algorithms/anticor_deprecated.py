@@ -1,8 +1,11 @@
-from ..tdagent import TDAgent
-import numpy as np
 import warnings
+
+import numpy as np
 import pandas as pd
 from pandas.stats.moments import rolling_corr
+
+from ..tdagent import TDAgent
+
 
 class ANTICOR(TDAgent):
     """ Anticor (anti-correlation) is a heuristic portfolio selection algorithm.
@@ -26,7 +29,6 @@ class ANTICOR(TDAgent):
         super(ANTICOR, self).__init__()
         self.window = window
         self.c_version = c_version
-
 
     def decide_by_history(self, x, last_b=None):
         self.record_history(x)
@@ -129,10 +131,12 @@ class ANTICOR(TDAgent):
 
             get_weights_c(CORR, EX, weights)
 
-        return weights[-1,:]
+        return weights[-1, :]
+
 
 def rolling_corr(x, y):
     '''Rolling correlation between columns from x and y'''
+
     def rolling(dataframe):
         ret = dataframe.copy()
         for col in ret:
@@ -143,17 +147,17 @@ def rolling_corr(x, y):
 
     EX = rolling(x)
     EY = rolling(y)
-    EX2 = rolling(x**2)
-    EY2 = rolling(y**2)
+    EX2 = rolling(x ** 2)
+    EY2 = rolling(y ** 2)
 
-    RXY = np.zeros((n,k,k))
+    RXY = np.zeros((n, k, k))
 
     for i, col_x in enumerate(x):
         for j, col_y in enumerate(y):
             DX = EX2[col_x] - EX[col_x] ** 2
             DY = EY2[col_y] - EY[col_y] ** 2
             product_xy = x[col_x] * y[col_y]
-            RXY[:, i, j] = product_xy.rolling(window=5).mean()- EX[col_x] * EY[col_y]
+            RXY[:, i, j] = product_xy.rolling(window=5).mean() - EX[col_x] * EY[col_y]
             RXY[:, i, j] = RXY[:, i, j] / np.sqrt(DX * DY)
 
     return RXY, EX.values

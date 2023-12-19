@@ -1,5 +1,7 @@
-from ..tdagent import TDAgent
 import numpy as np
+
+from ..tdagent import TDAgent
+
 
 class UP(TDAgent):
     """ Universal Portfolio by Thomas Cover enhanced for "leverage" (instead of just
@@ -10,6 +12,7 @@ class UP(TDAgent):
         T. Cover. Universal Portfolios, 1991.
         http://www-isl.stanford.edu/~cover/papers/paper93.pdf
     """
+
     def __init__(self, eval_points=10000, leverage=1., W=None):
         """
         :param eval_points: Number of evaluated points (approximately). Complexity of the
@@ -31,15 +34,14 @@ class UP(TDAgent):
         self.S = np.matrix(np.ones(self.W.shape[0])).T
 
         # stretch simplex based on leverage (simple calculation yields this)
-        leverage = max(self.leverage, 1./m)
-        stretch = (leverage - 1./m) / (1. - 1./m)
-        self.W = (self.W - 1./m) * stretch + 1./m
-
+        leverage = max(self.leverage, 1. / m)
+        stretch = (leverage - 1. / m) / (1. - 1. / m)
+        self.W = (self.W - 1. / m) * stretch + 1. / m
 
     def decide_by_history(self, x, last_b):
         # calculate new wealth of all CRPs
         x = self.get_last_rpv(x)
-        x = np.reshape(x, (1,x.size))
+        x = np.reshape(x, (1, x.size))
 
         if self.W is None:
             self.init_portfolio(x)
@@ -48,8 +50,7 @@ class UP(TDAgent):
         b = self.W.T * self.S
         pv = b / np.sum(b)
         pvn = np.ravel(pv)
-        return pvn #squeeze not working there
-
+        return pvn  # squeeze not working there
 
 
 def mc_simplex(d, points):
@@ -57,9 +58,6 @@ def mc_simplex(d, points):
     :param d: Number of dimensions
     :param points: Total number of points.
     '''
-    a = np.sort(np.random.random((points,d)))
-    a = np.hstack([np.zeros((points,1)), a, np.ones((points,1))])
+    a = np.sort(np.random.random((points, d)))
+    a = np.hstack([np.zeros((points, 1)), a, np.ones((points, 1))])
     return np.diff(a)
-
-
-

@@ -1,11 +1,14 @@
-from __future__ import division,absolute_import,print_function
+from __future__ import division, absolute_import, print_function
+
+from time import time
+
 import numpy as np
+
+from pgportfolio.constants import *
 from pgportfolio.marketdata.datamatrices import DataMatrices
 from pgportfolio.marketdata.globaldatamatrix import HistoryManager
 from pgportfolio.tools.configprocess import parse_time
-from pgportfolio.constants import *
 from pgportfolio.tools.data import get_volume_forward
-from time import time
 
 
 def get_coin_name_list(config, online):
@@ -31,7 +34,7 @@ def get_coin_name_list(config, online):
     coins = HistoryManager(input_config["coin_number"], end,
                            volume_forward=volume_forward,
                            volume_average_days=input_config["volume_average_days"],
-                           online=online).\
+                           online=online). \
         select_coins(start, end)
     return coins
 
@@ -43,13 +46,13 @@ def calculate_pv_after_commission(w1, w0, commission_rate):
     @:param commission_rate: rate of commission fee, proportional to the transaction cost
     """
     mu0 = 1
-    mu1 = 1 - 2*commission_rate + commission_rate ** 2
-    while abs(mu1-mu0) > 1e-10:
+    mu1 = 1 - 2 * commission_rate + commission_rate ** 2
+    while abs(mu1 - mu0) > 1e-10:
         mu0 = mu1
         mu1 = (1 - commission_rate * w0[0] -
-            (2 * commission_rate - commission_rate ** 2) *
-            np.sum(np.maximum(w0[1:] - mu1*w1[1:], 0))) / \
-            (1 - commission_rate * w1[0])
+               (2 * commission_rate - commission_rate ** 2) *
+               np.sum(np.maximum(w0[1:] - mu1 * w1[1:], 0))) / \
+              (1 - commission_rate * w1[0])
     return mu1
 
 
@@ -73,7 +76,7 @@ def asset_vector_to_dict(coin_list, vector, with_BTC=True):
     if with_BTC:
         dict_coin['BTC'] = vector[0]
     for i, name in enumerate(coin_list):
-        if vector[i+1] > 0:
+        if vector[i + 1] > 0:
             dict_coin[name] = vector[i + 1]
     return dict_coin
 
@@ -81,6 +84,5 @@ def asset_vector_to_dict(coin_list, vector, with_BTC=True):
 def save_test_data(config, file_name="test_data", output_format="csv"):
     if output_format == "csv":
         matrix = get_test_data(config)
-        with open(file_name+"."+output_format, 'wb') as f:
+        with open(file_name + "." + output_format, 'wb') as f:
             np.savetxt(f, matrix.T, delimiter=",")
-

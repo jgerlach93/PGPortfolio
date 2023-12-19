@@ -1,7 +1,8 @@
-from ..tdagent import TDAgent
-from pgportfolio.tdagent.algorithms.crp import CRP
 import numpy as np
 from scipy.optimize import minimize
+
+from pgportfolio.tdagent.algorithms.crp import CRP
+
 
 class BCRP(CRP):
     """ Best Constant Rebalanced Portfolio = Constant Rebalanced Portfolio constructed with hindsight. It is often used as benchmark.
@@ -37,8 +38,8 @@ class BCRP(CRP):
 def opt_weights(X, max_leverage=1):
     x_0 = max_leverage * np.ones(X.shape[1]) / float(X.shape[1])
     objective = lambda b: -np.prod(X.dot(b))
-    cons = ({'type': 'eq', 'fun': lambda b: max_leverage-np.sum(b)},)
-    bnds = [(0., max_leverage)]*len(x_0)
+    cons = ({'type': 'eq', 'fun': lambda b: max_leverage - np.sum(b)},)
+    bnds = [(0., max_leverage)] * len(x_0)
     res = minimize(objective, x_0, bounds=bnds, constraints=cons, method='slsqp', options={'ftol': 1e-07})
     return res.x
 
@@ -47,10 +48,10 @@ if __name__ == '__main__':
     from pgportfolio.tools.backtest import get_test_data
     from pgportfolio.tools.configprocess import preprocess_config
     import json
+
     with open("pgportfolio/net_config.json") as file:
         config = json.load(file)
     config = preprocess_config(config)
     data = get_test_data(config)
     bcrp = BCRP()
     result = bcrp.get_weight(data.T)
-

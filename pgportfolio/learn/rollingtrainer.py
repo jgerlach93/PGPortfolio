@@ -1,9 +1,12 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-from pgportfolio.learn.tradertrainer import TraderTrainer
+
 import logging
+
 import tflearn
+
+from pgportfolio.learn.tradertrainer import TraderTrainer
 
 
 class RollingTrainer(TraderTrainer):
@@ -42,8 +45,8 @@ class RollingTrainer(TraderTrainer):
 
             logging.info('training loss is %s\n' % loss_value)
             logging.info('the portfolio value on validation asset is %s\nlog_mean is %s\n' %
-                         (v_pv,v_log_mean))
-            logging.info('the portfolio value on test asset is %s\n mean is %s' % (t_pv,t_log_mean))
+                         (v_pv, v_log_mean))
+            logging.info('the portfolio value on test asset is %s\n mean is %s' % (t_pv, t_log_mean))
 
     def decide_by_history(self, history, last_w):
         result = self._agent.decide_by_history(history, last_w)

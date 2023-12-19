@@ -1,9 +1,11 @@
-from ..tdagent import TDAgent
 import numpy as np
+
+from ..tdagent import TDAgent
+
 
 class UBAH(TDAgent):
 
-    def __init__(self, b = None):
+    def __init__(self, b=None):
         super(UBAH, self).__init__()
         self.b = b
 

@@ -1,6 +1,8 @@
-from __future__ import division,absolute_import,print_function
-import numpy as np
+from __future__ import division, absolute_import, print_function
+
 import logging
+
+import numpy as np
 
 
 class ReplayBuffer:
@@ -44,7 +46,7 @@ class ReplayBuffer:
         else:
             batch_start = self.__sample(0, len(self.__experiences) - self.__batch_size,
                                         self.__sample_bias)
-            batch = self.__experiences[batch_start:batch_start+self.__batch_size]
+            batch = self.__experiences[batch_start:batch_start + self.__batch_size]
         return batch
 
 

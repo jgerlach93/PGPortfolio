@@ -1,5 +1,6 @@
-from ..tdagent import TDAgent
 import numpy as np
+
+from ..tdagent import TDAgent
 
 
 class PAMR(TDAgent):
@@ -12,6 +13,7 @@ class PAMR(TDAgent):
         Pamr: Passive aggressive mean reversion strategy for portfolio selection, 2012.
         http://www.cais.ntu.edu.sg/~chhoi/paper_pdf/PAMR_ML_final.pdf
     """
+
     def __init__(self, eps=0.5, C=500, variant=2, b=None):
         """
         :param eps: Control parameter for variant 0. Must be >=0, recommended value is
@@ -22,7 +24,7 @@ class PAMR(TDAgent):
         super(PAMR, self).__init__()
 
         # input check
-        if not(eps >= 0):
+        if not (eps >= 0):
             raise ValueError('epsilon parameter must be >=0')
 
         if variant == 0:
@@ -50,7 +52,6 @@ class PAMR(TDAgent):
         self.b = b
         return self.b
 
-
     def update(self, b, x, eps, C):
         """ Update portfolio weights to satisfy constraint b * x <= eps
         and minimize distance to previous weights. """
@@ -58,7 +59,7 @@ class PAMR(TDAgent):
 
         le = np.maximum(0., np.dot(b, x) - eps)
 
-        denominator = np.square(np.linalg.norm(x-x_mean))
+        denominator = np.square(np.linalg.norm(x - x_mean))
 
         if self.variant == 0:
             tau = le / denominator
@@ -75,5 +76,3 @@ class PAMR(TDAgent):
 
         # project it onto simplex
         return self.simplex_proj(b)
-
-

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-from ..tdagent import TDAgent
+import logging
+
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
-import logging
+
+from ..tdagent import TDAgent
 
 
 class BK(TDAgent):
@@ -13,6 +15,7 @@ class BK(TDAgent):
         L. Gyorfi, G. Lugosi, and F. Udina. Nonparametric kernel based sequential
         investment strategies. Mathematical Finance 16 (2006) 337–357.
     """
+
     def __init__(self, k=5, l=10):
         """
         :param k: Sequence length.
@@ -35,7 +38,6 @@ class BK(TDAgent):
         # get best weights
         return opt_weights(J)
 
-
     def find_nn(self, H, k, l):
         """ Note that nearest neighbors are calculated in a different (more efficient) way than shown
         in the article.
@@ -44,8 +46,8 @@ class BK(TDAgent):
         """
         # calculate distance from current sequence to every other point
         D = H * 0
-        for i in range(1, k+1):
-            D += (H.shift(i-1) - H.iloc[-i])**2
+        for i in range(1, k + 1):
+            D += (H.shift(i - 1) - H.iloc[-i]) ** 2
         D = D.sum(1).iloc[:-1]
 
         # sort and find nearest neighbors
@@ -55,13 +57,13 @@ class BK(TDAgent):
 
 def opt_weights(X, max_leverage=1):
     x_0 = max_leverage * np.ones(X.shape[1]) / float(X.shape[1])
-    objective = lambda b: -np.sum(np.log(np.maximum(np.dot(X-1, b)+1,1e-4)))
-    cons = ({'type': 'eq', 'fun': lambda b: max_leverage-sum(b)},)
-    bnds = [(0., max_leverage)]*len(x_0)
+    objective = lambda b: -np.sum(np.log(np.maximum(np.dot(X - 1, b) + 1, 1e-4)))
+    cons = ({'type': 'eq', 'fun': lambda b: max_leverage - sum(b)},)
+    bnds = [(0., max_leverage)] * len(x_0)
     while True:
         res = minimize(objective, x_0, bounds=bnds, constraints=cons, method='slsqp')
         eps = 1e-7
-        if (res.x < 0-eps).any() or (res.x > max_leverage+eps).any():
+        if (res.x < 0 - eps).any() or (res.x > max_leverage + eps).any():
             X = X + np.random.randn(1)[0] * 1e-5
             logging.debug('Optimal weights not found, trying again')
             continue
